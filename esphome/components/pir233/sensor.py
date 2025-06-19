@@ -6,9 +6,6 @@ from esphome.const import (
     ENTITY_CATEGORY_CONFIG,
     UNIT_EMPTY,
     CONF_PIN,
-    CONF_INITIAL_VALUE,
-    CONF_MIN_VALUE,
-    CONF_MAX_VALUE,
     CONF_ID,
     CONF_SENSITIVITY,
 )
