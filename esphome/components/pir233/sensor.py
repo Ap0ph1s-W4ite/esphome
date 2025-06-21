@@ -23,24 +23,32 @@ ICON_PERSISTENCE = "mdi:timer-sand"
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(PIR233Component),
-        cv.Required(CONF_PIN): pins.gpio_pin_schema,
-        cv.Optional(CONF_DETECTION_INTERVAL, default=15): number.NUMBER_SCHEMA.extend(
-            icon=ICON_DETECTION_INTERVAL,
+        cv.Required(CONF_PIN): pins.gpio_output_pin_schema,
+    }
+    # TODO: Look if necessary to have cv.COMPONENT_SCHEMA here
+    # TODO: Add the default, min and max values for the parameters. Look into the example ./esphome/components/bp1658cj/__init__.py 
+).extend(
+    {
+        cv.Optional(CONF_DETECTION_INTERVAL): number.number_schema(
+            PIR233Component,
             unit_of_measurement="s",
             entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_DETECTION_INTERVAL,
         ),
-        cv.Optional(CONF_SENSITIVITY, default=3): number.NUMBER_SCHEMA.extend(
+        cv.Optional(CONF_SENSITIVITY): number.number_schema(
+            PIR233Component,
+            unit_of_measurement=UNIT_EMPTY,
+            entity_category=ENTITY_CATEGORY_CONFIG,
             icon=ICON_SENSITIVITY,
-            unit_of_measurement=UNIT_EMPTY,
-            entity_category=ENTITY_CATEGORY_CONFIG,
         ),
-        cv.Optional(CONF_PERSISTENCE, default=1): number.NUMBER_SCHEMA.extend(
-            icon=ICON_PERSISTENCE,
+        cv.Optional(CONF_PERSISTENCE): number.number_schema(
+            PIR233Component,
             unit_of_measurement=UNIT_EMPTY,
             entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_PERSISTENCE,
         ),
     }
-).extend(cv.COMPONENT_SCHEMA)
+)
 
 
 async def to_code(config):
@@ -48,18 +56,15 @@ async def to_code(config):
     await cg.register_component(var, config)
     pin = await gpio_pin_expression(config[CONF_PIN])
     cg.add(var.set_pin(pin))
-    sensitivity = await number.new_number(
-        config[CONF_SENSITIVITY], min_value=1, max_value=10, step=1
-    )
-    await cg.register_parented(sensitivity, var)
-    cg.add(var.set_sensitivity(sensitivity))
-    persistence = await number.new_number(
-        config[CONF_PERSISTENCE], min_value=1, max_value=10, step=1
-    )
-    await cg.register_parented(persistence, var)
-    cg.add(var.set_persistence(persistence))
-    detection_interval = await number.new_number(
-        config[CONF_DETECTION_INTERVAL], min_value=1, max_value=60, step=1
-    )
-    await cg.register_parented(detection_interval, var)
-    cg.add(var.set_detection_interval(detection_interval))
+    if detection_interval := config.get(CONF_DETECTION_INTERVAL):
+        delta = await number.new_number(detection_interval, min_value=1, max_value=60, step=1)
+        await cg.register_parented(delta, var)
+        cg.add(var.set_detection_interval(delta))
+    if sensitivity := config.get(CONF_SENSITIVITY):
+        delta = await number.new_number(sensitivity, min_value=1, max_value=10, step=1)
+        await cg.register_parented(delta, var)
+        cg.add(var.set_sensitivity(delta))
+    if persistence := config.get(CONF_PERSISTENCE):
+        delta = await number.new_number(persistence, min_value=1, max_value=60, step=1)
+        await cg.register_parented(delta, var)
+        cg.add(var.set_persistence(delta))
