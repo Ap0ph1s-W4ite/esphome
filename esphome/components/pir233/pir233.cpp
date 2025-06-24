@@ -6,7 +6,25 @@ namespace pir233 {
 
 static const char *const TAG = "pir233";
 
-void PIR233Component::setup() { ESP_LOGCONFIG(TAG, "Setting up PIR233 Component"); }
+uint16_t read_bit_pattern_() {
+  this->pin_->pin_mode(gpio::FLAG_OUTPUT);
+  this->pin_->digital_write(false);
+  delayMicroseconds(4);
+  this->pin_->digital_write(true);
+  delayMicroseconds(4);
+  this->pin_->pin_mode(gpio::FLAG_INPUT);
+  delayMicroseconds(5);
+  int value = this->pin_->digital_read();
+
+  delayMicroseconds(4);
+  return value;
+}
+
+void PIR233Component::setup() { 
+    ESP_LOGCONFIG(TAG, "Setting up PIR233 Component");
+    
+
+}
 
 void PIR233Component::dump_config() {
   ESP_LOGCONFIG(TAG, "PIR233:");

@@ -19,4 +19,4 @@ async def to_code(config):
     pir233_component = await cg.get_variable(config[CONF_PIR233_ID])
     if CONF_MOTION in config:
         motion = await binary_sensor.new_binary_sensor(config[CONF_MOTION])
-        cg.add(pir233_component.set_motion_binary_sensor(motion))
+        cg.add(pir233_component.get_motion_binary_sensor(motion))
