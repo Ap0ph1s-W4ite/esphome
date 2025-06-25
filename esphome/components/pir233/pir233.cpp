@@ -38,7 +38,7 @@ bool PIR233Component::validate_data_(uint32_t data) {
 }
 
 void PIR233Component::setup() {
-  ESP_LOGCONFIG(TAG, "Setting up PIR233 Component");
+  ESP_LOGI(TAG, "Setting up PIR233 Component...");
   uint32_t data = this->motion_data_();
   bool is_valid = this->validate_data_(data);
 
@@ -48,8 +48,8 @@ void PIR233Component::setup() {
 
   // TODO: Repeat one more time if the result is not valid
   if (is_valid) {
-    ESP_LOGCONFIG(TAG, "PIR233 sensor is working correctly. First bits: %d%d, Last bit: %d", first_bit, second_bit,
-                  last_bit);
+    ESP_LOGI(TAG, "PIR233 sensor is working correctly. First bits: %d%d, Last bit: %d", first_bit, second_bit,
+             last_bit);
   } else {
     ESP_LOGE(TAG, "PIR233 sensor validation failed. First bits: %d%d, Last bit: %d. Check wiring or sensor status.",
              first_bit, second_bit, last_bit);
@@ -57,8 +57,11 @@ void PIR233Component::setup() {
 }
 
 void PIR233Component::dump_config() {
-  //   ESP_LOGCONFIG(TAG, "PIR233:");
-  //   LOG_BINARY_SENSOR("  ", "Motion Detected", this);
+  ESP_LOGCONFIG(TAG, "PIR233:");
+  LOG_PIN("  Pin: ", this->pin_);
+  ESP_LOGCONFIG(TAG, "  Detection Interval: %u", this->detection_interval_);
+  ESP_LOGCONFIG(TAG, "  Sensitivity: %u", this->sensitivity_);
+  ESP_LOGCONFIG(TAG, "  Persistence: %u", this->persistence_);
 }
 
 void PIR233Component::loop() {
