@@ -7,8 +7,8 @@
 namespace esphome {
 namespace pir233 {
 
-static const uint16_t FIRST_TWO_BITS = 0x8000;
-static const uint16_t LAST_BIT = 0x0000;
+static const uint32_t VALIDATION_MASK = 0x30001;
+static const uint32_t EXPECTED_VALID_MASK = 0x20000;
 
 class PIR233Component : public Component, public BinarySensor {
  public:
@@ -26,7 +26,9 @@ class PIR233Component : public Component, public BinarySensor {
   uint8_t sensitivity_{1};
   uint8_t persistence_{2};
 
-  uint16_t read_bit_pattern_();
+  uint8_t read_bit_pattern_();
+  uint32_t motion_data_();
+  bool validate_data_();
 
   GPIOPin *pin_;
 };
