@@ -8,7 +8,7 @@ from . import PIR233Component, CONF_PIR233_ID
 DEPENDENCIES = ["pir233"]
 
 CONFIG_SCHEMA = {
-    cv.GenerateID(): cv.use_id(PIR233Component),
+    cv.GenerateID(CONF_PIR233_ID): cv.use_id(PIR233Component),
     cv.Optional(CONF_MOTION): binary_sensor.binary_sensor_schema(
         device_class=DEVICE_CLASS_MOTION, icon=ICON_MOTION_SENSOR
     ),

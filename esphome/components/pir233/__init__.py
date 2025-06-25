@@ -11,8 +11,8 @@ CODEOWNERS = ["@Ap0ph1s-W4ite"]
 
 CONF_PIR233_ID = "pir233_id"
 
-pir233_component_ns = cg.esphome_ns.namespace("pir233_component")
-PIR233Component = pir233_component_ns.class_("PIR233Component", cg.Component)
+pir233_ns = cg.esphome_ns.namespace("pir233")
+PIR233Component = pir233_ns.class_("PIR233Component", cg.Component)
 
 CONF_PERSISTENCE = "persistence"
 CONF_DETECTION_INTERVAL = "detection_interval"
