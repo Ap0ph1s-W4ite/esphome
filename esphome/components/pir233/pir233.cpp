@@ -48,8 +48,8 @@ void PIR233Component::setup() {
 
   // TODO: Repeat one more time if the result is not valid
   if (is_valid) {
-    ESP_LOGD(TAG, "PIR233 sensor is working correctly. First bits: %d%d, Last bit: %d", first_bit, second_bit,
-             last_bit);
+    ESP_LOGCONFIG(TAG, "PIR233 sensor is working correctly. First bits: %d%d, Last bit: %d", first_bit, second_bit,
+                  last_bit);
   } else {
     ESP_LOGE(TAG, "PIR233 sensor validation failed. First bits: %d%d, Last bit: %d. Check wiring or sensor status.",
              first_bit, second_bit, last_bit);
@@ -57,8 +57,8 @@ void PIR233Component::setup() {
 }
 
 void PIR233Component::dump_config() {
-  ESP_LOGCONFIG(TAG, "PIR233:");
-  LOG_BINARY_SENSOR("  ", "Motion Detected", this);
+  //   ESP_LOGCONFIG(TAG, "PIR233:");
+  //   LOG_BINARY_SENSOR("  ", "Motion Detected", this);
 }
 
 void PIR233Component::loop() {
