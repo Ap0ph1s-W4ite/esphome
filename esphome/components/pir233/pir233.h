@@ -31,6 +31,8 @@ class PIR233Component : public Component, public binary_sensor::BinarySensor {
   uint32_t motion_data_();
   bool validate_data_(uint32_t data);
 
+  bool validation_result_{false};
+
   GPIOPin *pin_;
 };
 

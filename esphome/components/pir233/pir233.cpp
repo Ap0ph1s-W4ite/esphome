@@ -37,10 +37,12 @@ bool PIR233Component::validate_data_(uint32_t data) {
   }
 }
 
+// TODO: Check why setup() is not being called
 void PIR233Component::setup() {
   ESP_LOGI(TAG, "Setting up PIR233 Component...");
   uint32_t data = this->motion_data_();
   bool is_valid = this->validate_data_(data);
+  this->validation_result_ = is_valid;
 
   uint8_t first_bit = (data >> 19) & 0x01;
   uint8_t second_bit = (data >> 18) & 0x01;
@@ -62,6 +64,12 @@ void PIR233Component::dump_config() {
   ESP_LOGCONFIG(TAG, "  Detection Interval: %u", this->detection_interval_);
   ESP_LOGCONFIG(TAG, "  Sensitivity: %u", this->sensitivity_);
   ESP_LOGCONFIG(TAG, "  Persistence: %u", this->persistence_);
+
+  if (this->validation_result_) {
+    ESP_LOGI(TAG, "  PIR233 sensor is validated successfully.");
+  } else {
+    ESP_LOGE(TAG, "  PIR233 sensor validation failed. Please check the wiring or sensor status.");
+  }
 }
 
 void PIR233Component::loop() {
