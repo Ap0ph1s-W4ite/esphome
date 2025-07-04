@@ -33,6 +33,9 @@ class PIR233Component : public Component, public binary_sensor::BinarySensor {
 
   bool validation_result_{false};
 
+  // DEBUG
+  uint32_t last_validation_time_{0};  // Timestamp of last validation
+
   GPIOPin *pin_;
 };
 

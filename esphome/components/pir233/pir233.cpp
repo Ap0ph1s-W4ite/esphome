@@ -13,7 +13,7 @@ uint8_t PIR233Component::read_bit_pattern_() {
   this->pin_->digital_write(true);
   delayMicroseconds(4);
   this->pin_->pin_mode(gpio::FLAG_INPUT);
-  delayMicroseconds(5);
+  delayMicroseconds(4);
   int value = this->pin_->digital_read();
 
   delayMicroseconds(4);
@@ -48,6 +48,9 @@ void PIR233Component::setup() {
   uint8_t second_bit = (data >> 18) & 0x01;
   uint8_t last_bit = data & 0x01;
 
+  // DEBUG
+  this->last_validation_time_ = millis();  // Initialize last validation time
+
   // TODO: Repeat one more time if the result is not valid
   if (is_valid) {
     ESP_LOGI(TAG, "PIR233 sensor is working correctly. First bits: %d%d, Last bit: %d", first_bit, second_bit,
@@ -73,10 +76,32 @@ void PIR233Component::dump_config() {
 }
 
 void PIR233Component::loop() {
-  // This is where you would handle the PIR sensor logic.
-  // For example, you might read from a GPIO pin to check for motion.
-  // If motion is detected, you can call this->publish_state(true);
-  // and if no motion is detected, call this->publish_state(false);
+  // Get current time
+  uint32_t current_time = millis();
+
+  // Check if 30 seconds have passed since last validation
+  if (current_time - this->last_validation_time_ >= 30000) {
+    // Update last validation time
+    this->last_validation_time_ = current_time;
+
+    // Run the validation code (same as in setup)
+    uint32_t data = this->motion_data_();
+    bool is_valid = this->validate_data_(data);
+    this->validation_result_ = is_valid;
+
+    uint8_t first_bit = (data >> 19) & 0x01;
+    uint8_t second_bit = (data >> 18) & 0x01;
+    uint8_t last_bit = data & 0x01;
+
+    // Log validation results
+    if (is_valid) {
+      ESP_LOGI(TAG, "PIR233 sensor check: VALID. First bits: %d%d, Last bit: %d", first_bit, second_bit, last_bit);
+    } else {
+      ESP_LOGW(TAG, "PIR233 sensor check: INVALID. First bits: %d%d, Last bit: %d", first_bit, second_bit, last_bit);
+    }
+  }
+
+  // Other loop logic can go here
 }
 
 }  // namespace pir233
